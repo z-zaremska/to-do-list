@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}To-do list{% endblock title %}
+
+{% block content %}
+<h1>To-do list</h1>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-info alert-dismissable fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        <small><sup>x</sup></small>
+      </button>
+    </div>
+  {% endfor %}
+
+
+{% endif %}
+
+{% if all_items %}
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Item</th>
+            <td>Description</td>
+            <th scope="col">Completed</th>
+            <th scope="col"><center>Delete?</center></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for thing in all_items %}
+
+                {% if thing.completed == True %}
+                    <tr class="table-success">
+                        <td>{{ thing.id }}</td>
+                        <td class="striker">{{ thing.item }}</td>
+                        <td>{{ thing.description }}</td>
+                        <td>
+                          <center>
+                            <a href="{% url 'cross_off' thing.id %}">
+                              <input class="form-check-input" type="submit" value="">
+                            </a>
+                          </center> 
+                        </td>
+
+
+
+
+                        <td><center><a class="btn btn-danger" href="{% url 'remove' thing.id %}" role="button">Remove</a></center></td>
+                    </tr>
+                {% else %}
+                    <tr class="table-secondary">
+                        <td>{{ thing.id }}</td>
+                        <td><a href="{% url 'edit_item' thing.id %}">{{ thing.item }}</a></td>
+                        <td>{{ thing.description }}</td>                        
+                        <td>
+                          <center>
+                            <a href="{% url 'cross' thing.id %}">
+                              <input class="form-check-input" type="submit" value="">
+                            </a>
+                          </center> 
+                        </td>
+                        <td><center><a class="btn btn-danger" href="{% url 'remove' thing.id %}" role="button">Remove</a></center></td>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+        
+    </table>    
+{% endif %}
+
+{% endblock content %}
+
