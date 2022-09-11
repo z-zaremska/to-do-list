@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}To-do list | Edit item{% endblock title %}
+{% block title %}
+List: >>> LIST TITLE <<< | Edit item
+{% endblock title %}
 
 {% block content %}
 
@@ -11,8 +13,8 @@
             <input class="form-control mr-sm-2" type="search" placeholder="{{ item.description }}" value="{{ item.description }}" aria-label="Search" name='item'>
             <input type="hidden" value="{{ item.completed }}" name="completed">            
             <br>
-            <button class="btn btn-info" type="submit">Edit item</button>
+            <button class="btn btn-info" type="submit">Save edited item</button>
         </form>
     {% endif %}
 
-    {% endblock content %}
+{% endblock content %}

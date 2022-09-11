@@ -4,8 +4,9 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
-    path('delete/<list_id>', views.remove, name='remove'),
-    path('cross/<list_id>', views.cross, name='cross'),
-    path('cross_off/<list_id>', views.cross_off, name='cross_off'),
-    path('edit_item/<list_id>', views.edit_item, name='edit_item'),
+    path('list/<list_id>/', views.list, name=""),
+    path('item/<item_id>/delete/', views.remove_item, name='remove_item'),
+    path('cross/<item_id>', views.cross_item, name='cross_item'),
+    path('cross_off/<item_id>', views.cross_off_item, name='cross_off_item'),
+    path('edit_item/<item_id>', views.edit_item, name='edit_item'),
 ]

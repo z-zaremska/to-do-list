@@ -13,7 +13,7 @@
   
   <body>
 
-    <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
+    <nav class="navbar navbar-dark navbar-expand-lg bg-dark sticky-top">
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'home' %}">To-do List</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,8 +27,8 @@
             </ul>
             <form class="d-flex" method="POST">
               {% csrf_token %}
-              <input class="form-control me-2" type="search" placeholder="To-do item" aria-label="Search" name='item'>
-              <button class="btn btn-outline-info" type="submit">Add to list</button>
+              <input class="form-control me-2" type="text" placeholder="Name your list" aria-label="" name='list_title'>
+              <button class="btn btn-outline-info" type="submit">Create new list</button>
             </form>
           </div>
         </div>
