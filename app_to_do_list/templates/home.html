@@ -32,7 +32,7 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">List</th>
-          <td scope="col">Created</td>
+          <th scope="col">Created</th>
           <th scope="col"><center>Action</center></th>
         </tr>
       </thead>
@@ -44,8 +44,8 @@
             <td><i>{{ list_feature.date_added }}</i></td>
             <td>
               <center>
-                <a class="btn btn-secondary" href="" role="button">Edit</a>
-                <a class="btn btn-danger" href="" role="button">Remove</a><br>
+                <a class="btn btn-secondary" href="{% url 'edit_list' list_feature.id %}" role="button">Edit</a>
+                <a class="btn btn-danger" href="{% url 'remove_list' list_feature.id %}" role="button">Remove</a>
               </center>
             </td>
           </tr>

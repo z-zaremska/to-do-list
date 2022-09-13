@@ -5,18 +5,18 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 def home(request):
+    list_features = List.objects.all()
+    
     if request.method == 'POST':
         form = ListForm(request.POST or None)
 
         if form.is_valid():
-            form.save()
-            list_features = List.objects.all
-            messages.success(request, (f'New list "LIST TITLE" has been created.'))
-            return render(request, 'home.html', {'list_features': list_features})
-            
-    else:
-        list_features = List.objects.all
-        return render(request, 'home.html', {'list_features': list_features})
+            new_list = form.save(commit=False)
+            list_title = new_list.list_title
+            new_list.save()
+            messages.success(request, (f'New list "{list_title}" has been created.'))
+    
+    return render(request, 'home.html', {'list_features': list_features,})
 
 def about(request):
     name = 'Zuza'
@@ -50,6 +50,27 @@ def list(request, list_id):
 
     return render(request, 'list.html', context)
 
+def remove_list(request, list_id):
+    list = List.objects.get(pk=list_id)
+    list.delete()
+    messages.success(request, ('List has been removed.'))
+    
+    return redirect(f'home')
+
+def edit_list(request, list_id):
+    list = List.objects.get(pk=list_id)
+
+    if request.method == 'POST':
+        form = ListForm(request.POST or None, instance=list)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, ('List has been editied.'))
+            return redirect(f'home')
+    
+    else:
+        return render(request, 'edit_list.html', {'list': list})
+
 def remove_item(request, item_id):
     item = Item.objects.get(pk=item_id)
     item_list = item.list.pk
@@ -60,28 +81,31 @@ def remove_item(request, item_id):
 
 def cross_item(request, item_id):
     item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
     item.completed = True
     item.save()
     
-    return redirect('home')
+    return redirect(f'/list/{item_list}/')
 
 def cross_off_item(request, item_id):
     item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
     item.completed = False
     item.save()
     
-    return redirect('home')
+    return redirect(f'/list/{item_list}/')
 
 def edit_item(request, item_id):
+    item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
+
     if request.method == 'POST':
-        item = Item.objects.get(pk=item_id)
         form = ItemForm(request.POST or None, instance=item)
 
         if form.is_valid():
             form.save()
             messages.success(request, ('Item has been editied.'))
-            return redirect('home')
+            return redirect(f'/list/{item_list}/')
     
     else:
-        item = Item.objects.get(pk=item_id)
         return render(request, 'edit_item.html', {'item': item})

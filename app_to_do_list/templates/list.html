@@ -6,9 +6,6 @@ To-do list | {{ list.list_title }}
 
 {% block content %}
 
-  <!-- Tytuł bieżącej strony -->
-  <h1>To-do list: {{ list.list_title }}</h1>
-
   <!-- Powiadomienie o utworzeniu nowej pozycji na liście -->
   {% if messages %}
     {% for message in messages %}
@@ -21,6 +18,17 @@ To-do list | {{ list.list_title }}
     {% endfor %}
   {% endif %}
 
+  <!-- Tytuł bieżącej strony -->
+  <h1>To-do list: {{ list.list_title }}</h1>
+
+  <!-- Dodawanie nowej pozycji na liście -->
+  <form class="d-flex" method="POST">
+    {% csrf_token %}
+    <input class="form-control me-2" type="text" placeholder="New item" aria-label="" name='item'>
+    <input class="form-control me-2" type="text" placeholder="Description" aria-label="" name='description'>
+    <button class="btn btn-outline-dark" type="submit">Add item</button>
+  </form>
+
   <!-- Zestawienie elementów listy -->
   {% if list_items %}
     <table class="table table-bordered">
@@ -28,9 +36,9 @@ To-do list | {{ list.list_title }}
         <tr>
           <th scope="col">#</th>
           <th scope="col">Item</th>
-          <td scope="col">Description</td>
+          <th scope="col">Description</th>
           <th scope="col">Completed</th>
-          <th scope="col"><center>Delete?</center></th>
+          <th scope="col"><center>Edit</center></th>
         </tr>
       </thead>
 
@@ -40,7 +48,7 @@ To-do list | {{ list.list_title }}
             <tr class="table-success">
               <td>{{ list_item.id }}</td>
               <td class="striker">{{ list_item.item }}</td>
-              <td>{{ list_item.description }}</td>
+              <td><i>{{ list_item.description }}</i></td>
               <td>
                 <center>
                   <a href="{% url 'cross_off_item' list_item.id %}">
@@ -48,13 +56,17 @@ To-do list | {{ list.list_title }}
                   </a>
                 </center> 
               </td>
-              <td><center><a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a></center></td>
+              <td>
+                <center>
+                  <a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
+                </center>
+              </td>
             </tr>
           {% else %}
             <tr class="table-secondary">
               <td>{{ list_item.id }}</td>
-              <td><a href="{% url 'edit_item' list_item.id %}">{{ list_item.item }}</a></td>
-              <td>{{ list_item.description }}</td>                        
+              <td>{{ list_item.item }}</td>
+              <td><i>{{ list_item.description }}</i></td>                        
               <td>
                 <center>
                   <a href="{% url 'cross_item' list_item.id %}">
@@ -62,7 +74,12 @@ To-do list | {{ list.list_title }}
                   </a>
                 </center> 
               </td>
-              <td><center><a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a></center></td>
+              <td>
+                <center>
+                  <a class="btn btn-secondary" href="{% url 'edit_item' list_item.id %}" role="button">Edit</a>
+                  <a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
+                </center>
+              </td>
           {% endif %}
         {% endfor %}
       </tbody>

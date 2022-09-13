@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 
 {% block title %}
-List: >>> LIST TITLE <<< | Edit item
+List: {{ item.list.list_title }} | Edit item
 {% endblock title %}
 
 {% block content %}
 
+    <!-- Tytuł bieżącej strony -->
+    <h1>Edit item</h1>
+
+    <!-- Formularz edycji item -->
     {% if item %}
         <form class="form-inline my-2 my-lg-0" method="POST">
             {% csrf_token %}
             <input class="form-control mr-sm-2" type="search" placeholder="{{ item.item }}" value="{{ item.item }}" aria-label="Search" name='item'>
-            <input class="form-control mr-sm-2" type="search" placeholder="{{ item.description }}" value="{{ item.description }}" aria-label="Search" name='item'>
-            <input type="hidden" value="{{ item.completed }}" name="completed">            
+            <input class="form-control mr-sm-2" type="search" placeholder="{{ item.description }}" value="{{ item.description }}" aria-label="Search" name='description'>
             <br>
             <button class="btn btn-info" type="submit">Save edited item</button>
         </form>
