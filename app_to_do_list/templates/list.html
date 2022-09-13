@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}
+To-do list | {{ list.list_title }}
+{% endblock title %}
+
+{% block content %}
+
+  <!-- Powiadomienie o utworzeniu nowej pozycji na liście -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-info alert-dismissable fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close">
+          <small><sup>x</sup></small>
+        </button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Tytuł bieżącej strony -->
+  <h1>To-do list: {{ list.list_title }}</h1>
+
+  <!-- Dodawanie nowej pozycji na liście -->
+  <form class="d-flex" method="POST">
+    {% csrf_token %}
+    <input class="form-control me-2" type="text" placeholder="New item" aria-label="" name='item'>
+    <input class="form-control me-2" type="text" placeholder="Description" aria-label="" name='description'>
+    <button class="btn btn-outline-dark" type="submit">Add item</button>
+  </form>
+
+  <!-- Zestawienie elementów listy -->
+  {% if list_items %}
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Item</th>
+          <th scope="col">Description</th>
+          <th scope="col">Completed</th>
+          <th scope="col"><center>Edit</center></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for list_item in list_items %}
+          {% if list_item.completed == True %}
+            <tr class="table-success">
+              <td>{{ list_item.id }}</td>
+              <td class="striker">{{ list_item.item }}</td>
+              <td><i>{{ list_item.description }}</i></td>
+              <td>
+                <center>
+                  <a href="{% url 'cross_off_item' list_item.id %}">
+                    <input class="form-check-input" type="submit" value="">
+                  </a>
+                </center> 
+              </td>
+              <td>
+                <center>
+                  <a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
+                </center>
+              </td>
+            </tr>
+          {% else %}
+            <tr class="table-secondary">
+              <td>{{ list_item.id }}</td>
+              <td>{{ list_item.item }}</td>
+              <td><i>{{ list_item.description }}</i></td>                        
+              <td>
+                <center>
+                  <a href="{% url 'cross_item' list_item.id %}">
+                    <input class="form-check-input" type="submit" value="">
+                  </a>
+                </center> 
+              </td>
+              <td>
+                <center>
+                  <a class="btn btn-secondary" href="{% url 'edit_item' list_item.id %}" role="button">Edit</a>
+                  <a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
+                </center>
+              </td>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>    
+  {% endif %}
+
+{% endblock content %}
+

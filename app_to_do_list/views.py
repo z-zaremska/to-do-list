@@ -1,61 +1,111 @@
 from django.shortcuts import render, redirect
-from .models import List
-from .forms import ListForm
+from .models import List, Item
+from .forms import ListForm, ItemForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 def home(request):
+    list_features = List.objects.all()
+    
     if request.method == 'POST':
         form = ListForm(request.POST or None)
 
         if form.is_valid():
-            form.save()
-            all_items = List.objects.all
-            messages.success(request, ('New item has been added!'))
-            return render(request, 'home.html', {'all_items': all_items})
+            new_list = form.save(commit=False)
+            list_title = new_list.list_title
+            new_list.save()
+            messages.success(request, (f'New list "{list_title}" has been created.'))
     
-    else:
-        all_items = List.objects.all
-        return render(request, 'home.html', {'all_items': all_items})
+    return render(request, 'home.html', {'list_features': list_features,})
 
 def about(request):
     name = 'Zuza'
     surname ='Zaremska'
-    context = {'name': name, 'surname': surname}
+    context = {
+        'name': name,
+        'surname': surname
+        }
     
     return render(request, 'about.html', context)
 
-def remove(request, list_id):
-    item = List.objects.get(pk=list_id)
+def list(request, list_id):
+    list = List.objects.get(pk=list_id)
+
+    if request.method == 'POST':
+        form = ItemForm(request.POST or None)
+
+        if form.is_valid():
+            new_item = form.save(commit=False)
+            new_item.list = list
+            new_item.save()
+            messages.success(request, ('New item has been added!'))
+
+    list_items = list.item_set.all()
+
+    context = {
+        'list': list,
+        'list_items': list_items,
+        'list_id': list_id,
+    }
+
+    return render(request, 'list.html', context)
+
+def remove_list(request, list_id):
+    list = List.objects.get(pk=list_id)
+    list.delete()
+    messages.success(request, ('List has been removed.'))
+    
+    return redirect(f'home')
+
+def edit_list(request, list_id):
+    list = List.objects.get(pk=list_id)
+
+    if request.method == 'POST':
+        form = ListForm(request.POST or None, instance=list)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, ('List has been editied.'))
+            return redirect(f'home')
+    
+    else:
+        return render(request, 'edit_list.html', {'list': list})
+
+def remove_item(request, item_id):
+    item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
     item.delete()
     messages.success(request, ('Item has been removed.'))
     
-    return redirect('home')
+    return redirect(f'/list/{item_list}/')
 
-def cross(request, list_id):
-    item = List.objects.get(pk=list_id)
+def cross_item(request, item_id):
+    item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
     item.completed = True
     item.save()
     
-    return redirect('home')
+    return redirect(f'/list/{item_list}/')
 
-def cross_off(request, list_id):
-    item = List.objects.get(pk=list_id)
+def cross_off_item(request, item_id):
+    item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
     item.completed = False
     item.save()
     
-    return redirect('home')
+    return redirect(f'/list/{item_list}/')
 
-def edit_item(request, list_id):
+def edit_item(request, item_id):
+    item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
+
     if request.method == 'POST':
-        item = List.objects.get(pk=list_id)
-        form = ListForm(request.POST or None, instance=item)
+        form = ItemForm(request.POST or None, instance=item)
 
         if form.is_valid():
             form.save()
             messages.success(request, ('Item has been editied.'))
-            return redirect('home')
+            return redirect(f'/list/{item_list}/')
     
     else:
-        item = List.objects.get(pk=list_id)
         return render(request, 'edit_item.html', {'item': item})
