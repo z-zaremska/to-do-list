@@ -11,4 +11,5 @@ urlpatterns = [
     path('item/<item_id>/cross/', views.cross_item, name='cross_item'),
     path('item/<item_id>/cross_off/', views.cross_off_item, name='cross_off_item'),
     path('item/<item_id>/edit_item/', views.edit_item, name='edit_item'),
+    path('item/<item_id>/subitem/create/', views.create_subitem, name='create_subitem'),
 ]

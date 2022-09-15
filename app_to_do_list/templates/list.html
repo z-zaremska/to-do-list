@@ -20,19 +20,21 @@ To-do list | {{ list.list_title }}
 
   <!-- Tytuł bieżącej strony -->
   <h1>To-do list: {{ list.list_title }}</h1>
+  <br>
 
   <!-- Dodawanie nowej pozycji na liście -->
   <form class="d-flex" method="POST">
     {% csrf_token %}
     <input class="form-control me-2" type="text" placeholder="New item" aria-label="" name='item'>
     <input class="form-control me-2" type="text" placeholder="Description" aria-label="" name='description'>
-    <button class="btn btn-outline-dark" type="submit">Add item</button>
+    <button class="btn btn-outline-success btn-sm" type="submit">Add item</button>
   </form>
+  <br>
 
   <!-- Zestawienie elementów listy -->
   {% if list_items %}
-    <table class="table table-bordered">
-      <thead class="table-dark">
+    <table class="table table-bordered table-sm">
+      <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col">Item</th>
@@ -42,12 +44,14 @@ To-do list | {{ list.list_title }}
         </tr>
       </thead>
 
-      <tbody>
+      <tbody class="table-group-divider">
         {% for list_item in list_items %}
           {% if list_item.completed == True %}
             <tr class="table-success">
-              <td>{{ list_item.id }}</td>
-              <td class="striker">{{ list_item.item }}</td>
+              <th scope="row">{{ list_item.id }}</th>
+              <td class="striker">{{ list_item.item }}
+                <a class="btn btn-info btn-sm" href="{% url 'create_subitem' list_item.id %}" role="button">+ subitem</a>
+              </td>
               <td><i>{{ list_item.description }}</i></td>
               <td>
                 <center>
@@ -58,14 +62,16 @@ To-do list | {{ list.list_title }}
               </td>
               <td>
                 <center>
-                  <a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
+                  <a class="btn btn-danger btn-sm" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
                 </center>
               </td>
             </tr>
           {% else %}
-            <tr class="table-secondary">
-              <td>{{ list_item.id }}</td>
-              <td>{{ list_item.item }}</td>
+            <tr>
+              <th scope="row">{{ list_item.id }}</th>
+              <td>{{ list_item.item }}
+                <a class="btn btn-info btn-sm" href="{% url 'create_subitem' list_item.id %}" role="button">+ subitem</a>
+              </td>
               <td><i>{{ list_item.description }}</i></td>                        
               <td>
                 <center>
@@ -76,10 +82,12 @@ To-do list | {{ list.list_title }}
               </td>
               <td>
                 <center>
-                  <a class="btn btn-secondary" href="{% url 'edit_item' list_item.id %}" role="button">Edit</a>
-                  <a class="btn btn-danger" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
+                  <a class="btn btn-secondary btn-sm" href="{% url 'edit_item' list_item.id %}" role="button">Edit</a>
+                  <a class="btn btn-danger btn-sm" href="{% url 'remove_item' list_item.id %}" role="button">Remove</a>
                 </center>
               </td>
+            </tr>
+
           {% endif %}
         {% endfor %}
       </tbody>

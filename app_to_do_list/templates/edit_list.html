@@ -13,7 +13,7 @@ Edit list
     {% if list %}
         <form class="form-inline my-2 my-lg-0" method="POST">
             {% csrf_token %}
-            <input class="form-control mr-sm-2" type="search" placeholder="{{ list.list_title }}" value="{{ list.list_item }}" aria-label="Search" name='list_title'>           
+            <input class="form-control mr-sm-2" type="search" placeholder="{{ list.list_title }}" value="{{ list.list_title }}" aria-label="Search" name='list_title'>           
             <br>
             <button class="btn btn-info" type="submit">Save edited list title</button>
         </form>

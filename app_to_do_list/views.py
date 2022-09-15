@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import List, Item
-from .forms import ListForm, ItemForm
+from .models import List, Item, Subitem
+from .forms import ListForm, ItemForm, SubitemForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 
@@ -32,20 +32,46 @@ def list(request, list_id):
     list = List.objects.get(pk=list_id)
 
     if request.method == 'POST':
-        form = ItemForm(request.POST or None)
+        item_form = ItemForm(request.POST or None)
 
-        if form.is_valid():
-            new_item = form.save(commit=False)
+        if item_form.is_valid():
+            new_item = item_form.save(commit=False)
+
             new_item.list = list
             new_item.save()
+
             messages.success(request, ('New item has been added!'))
 
-    list_items = list.item_set.all()
+    list_items = list.list_items.all()
 
     context = {
         'list': list,
         'list_items': list_items,
         'list_id': list_id,
+    }
+
+    return render(request, 'list.html', context)
+
+def create_subitem(request, item_id):
+    parent_item = Item.objects.get(pk=item_id)
+    
+    if request.method == 'POST':
+        subitem_form = SubitemForm(request.POST or None)
+    
+        if subitem_form.is_valid():
+            new_subitem = subitem_form.save(commit=False)
+
+            new_subitem.parent_item = parent_item
+            new_subitem.list = parent_item.list
+            new_subitem.save()
+
+            messages.success(request, ('New subitem has been added!'))
+    
+    item_subitems = parent_item.item_subitems.all()
+
+    context = {
+        'item_subitems': item_subitems,
+        'item_id': item_id,
     }
 
     return render(request, 'list.html', context)

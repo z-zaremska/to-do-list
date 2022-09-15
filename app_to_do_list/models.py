@@ -9,11 +9,17 @@ class List(models.Model):
         return self.list_title
 
 class Item(models.Model):
-    list = models.ForeignKey(List, on_delete=models.CASCADE)
+    list = models.ForeignKey(List, related_name="list_items", on_delete=models.CASCADE)
     item = models.CharField(max_length=200)
     completed = models.BooleanField(default=False)
     description = models.TextField(blank=True)
 
     def __str__(self):
         return (self.item + f" ({self.list.list_title})")
+
+class Subitem(Item):
+    parent_item = models.ForeignKey(Item, related_name="item_subitems", on_delete=models.CASCADE) 
+
+    def __str__(self):
+        return (self.item + f" ({self.parent_item}")
 
