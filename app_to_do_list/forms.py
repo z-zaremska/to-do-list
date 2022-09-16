@@ -9,9 +9,9 @@ class ListForm(forms.ModelForm):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['item', 'description']
+        fields = ['item', 'item_description']
 
 class SubitemForm(forms.ModelForm):
     class Meta:
         model = Subitem
-        fields = ['item', 'description']
+        fields = ['subitem', 'subitem_description']

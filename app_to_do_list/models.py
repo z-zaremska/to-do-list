@@ -11,15 +11,18 @@ class List(models.Model):
 class Item(models.Model):
     list = models.ForeignKey(List, related_name="list_items", on_delete=models.CASCADE)
     item = models.CharField(max_length=200)
-    completed = models.BooleanField(default=False)
-    description = models.TextField(blank=True)
+    item_completed = models.BooleanField(default=False)
+    item_description = models.TextField(blank=True)
 
     def __str__(self):
-        return (self.item + f" ({self.list.list_title})")
+        return (self.item + f" ({self.list})")
 
-class Subitem(Item):
-    parent_item = models.ForeignKey(Item, related_name="item_subitems", on_delete=models.CASCADE) 
-
+class Subitem(models.Model):
+    item = models.ForeignKey(Item, related_name="item_subitems", on_delete=models.CASCADE)
+    subitem = models.CharField(max_length=200)
+    subitem_completed = models.BooleanField(default=False)
+    subitem_description = models.TextField(blank=True)
+ 
     def __str__(self):
-        return (self.item + f" ({self.parent_item}")
+        return (self.subitem + f" ({self.item}")
 

@@ -43,7 +43,7 @@ def list(request, list_id):
             messages.success(request, ('New item has been added!'))
 
     list_items = list.list_items.all()
-
+  
     context = {
         'list': list,
         'list_items': list_items,
@@ -53,7 +53,7 @@ def list(request, list_id):
     return render(request, 'list.html', context)
 
 def create_subitem(request, item_id):
-    parent_item = Item.objects.get(pk=item_id)
+    item = Item.objects.get(pk=item_id)
     
     if request.method == 'POST':
         subitem_form = SubitemForm(request.POST or None)
@@ -61,20 +61,19 @@ def create_subitem(request, item_id):
         if subitem_form.is_valid():
             new_subitem = subitem_form.save(commit=False)
 
-            new_subitem.parent_item = parent_item
-            new_subitem.list = parent_item.list
+            new_subitem.item = item
             new_subitem.save()
 
             messages.success(request, ('New subitem has been added!'))
     
-    item_subitems = parent_item.item_subitems.all()
+    item_subitems = item.item_subitems.all()
 
     context = {
         'item_subitems': item_subitems,
         'item_id': item_id,
     }
 
-    return render(request, 'list.html', context)
+    return render(request, '', context)
 
 def remove_list(request, list_id):
     list = List.objects.get(pk=list_id)
@@ -108,7 +107,7 @@ def remove_item(request, item_id):
 def cross_item(request, item_id):
     item = Item.objects.get(pk=item_id)
     item_list = item.list.pk
-    item.completed = True
+    item.item_completed = True
     item.save()
     
     return redirect(f'/list/{item_list}/')
@@ -116,7 +115,7 @@ def cross_item(request, item_id):
 def cross_off_item(request, item_id):
     item = Item.objects.get(pk=item_id)
     item_list = item.list.pk
-    item.completed = False
+    item.item_completed = False
     item.save()
     
     return redirect(f'/list/{item_list}/')

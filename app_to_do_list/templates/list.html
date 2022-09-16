@@ -26,7 +26,7 @@ To-do list | {{ list.list_title }}
   <form class="d-flex" method="POST">
     {% csrf_token %}
     <input class="form-control me-2" type="text" placeholder="New item" aria-label="" name='item'>
-    <input class="form-control me-2" type="text" placeholder="Description" aria-label="" name='description'>
+    <input class="form-control me-2" type="text" placeholder="Description" aria-label="" name='item_description'>
     <button class="btn btn-outline-success btn-sm" type="submit">Add item</button>
   </form>
   <br>
@@ -46,13 +46,13 @@ To-do list | {{ list.list_title }}
 
       <tbody class="table-group-divider">
         {% for list_item in list_items %}
-          {% if list_item.completed == True %}
+          {% if list_item.item_completed == True %}
             <tr class="table-success">
               <th scope="row">{{ list_item.id }}</th>
               <td class="striker">{{ list_item.item }}
                 <a class="btn btn-info btn-sm" href="{% url 'create_subitem' list_item.id %}" role="button">+ subitem</a>
               </td>
-              <td><i>{{ list_item.description }}</i></td>
+              <td><i>{{ list_item.item_description }}</i></td>
               <td>
                 <center>
                   <a href="{% url 'cross_off_item' list_item.id %}">
@@ -72,7 +72,7 @@ To-do list | {{ list.list_title }}
               <td>{{ list_item.item }}
                 <a class="btn btn-info btn-sm" href="{% url 'create_subitem' list_item.id %}" role="button">+ subitem</a>
               </td>
-              <td><i>{{ list_item.description }}</i></td>                        
+              <td><i>{{ list_item.item_description }}</i></td>                        
               <td>
                 <center>
                   <a href="{% url 'cross_item' list_item.id %}">
