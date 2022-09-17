@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Item: {{ item }} | Create subitem
+{% endblock title %}
+
+{% block content %}
+
+    <!-- Tytuł bieżącej strony -->
+    <h1>Create subitem to item:</h1>
+    <h3><i>---> {{ item }}</i></h3>
+
+    <!-- Formularz edycji item -->
+    {% if item %}
+        <form class="form-inline my-2 my-lg-0" method="POST">
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" type="search" placeholder="Subitem" value="" aria-label="Search" name='subitem'>
+            <input class="form-control mr-sm-2" type="search" placeholder="Subitem description" value="" aria-label="Search" name='subitem_description'>
+            <br>
+            <button class="btn btn-info" type="submit">Add subitem</button>
+        </form>
+    {% endif %}
+
+{% endblock content %}

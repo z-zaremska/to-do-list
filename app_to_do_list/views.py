@@ -30,6 +30,14 @@ def about(request):
 
 def list(request, list_id):
     list = List.objects.get(pk=list_id)
+    list_items = list.list_items.all()
+    
+    all_subitems = Subitem.objects.all()
+    list_items_subitems = []
+
+    for subitem in all_subitems:
+        if subitem.item in list_items:
+            list_items_subitems.append(subitem)
 
     if request.method == 'POST':
         item_form = ItemForm(request.POST or None)
@@ -41,19 +49,19 @@ def list(request, list_id):
             new_item.save()
 
             messages.success(request, ('New item has been added!'))
-
-    list_items = list.list_items.all()
-  
+ 
     context = {
         'list': list,
         'list_items': list_items,
         'list_id': list_id,
+        'list_items_subitems': list_items_subitems,
     }
 
     return render(request, 'list.html', context)
 
 def create_subitem(request, item_id):
     item = Item.objects.get(pk=item_id)
+    item_list = item.list.pk
     
     if request.method == 'POST':
         subitem_form = SubitemForm(request.POST or None)
@@ -64,23 +72,19 @@ def create_subitem(request, item_id):
             new_subitem.item = item
             new_subitem.save()
 
-            messages.success(request, ('New subitem has been added!'))
+            messages.success(request, (f'New subitem has been added to item "{item}"!'))
+            return redirect(f'/list/{item_list}/')
+    else:
+        subitem_form = SubitemForm()
     
-    item_subitems = item.item_subitems.all()
-
-    context = {
-        'item_subitems': item_subitems,
-        'item_id': item_id,
-    }
-
-    return render(request, '', context)
+    return render(request, 'create_subitem.html', {'subitem_form': subitem_form, 'item': item,})
 
 def remove_list(request, list_id):
     list = List.objects.get(pk=list_id)
     list.delete()
     messages.success(request, ('List has been removed.'))
     
-    return redirect(f'home')
+    return redirect('home')
 
 def edit_list(request, list_id):
     list = List.objects.get(pk=list_id)

@@ -20,8 +20,6 @@ To-do list | {{ list.list_title }}
 
   <!-- Tytuł bieżącej strony -->
   <h1>To-do list: {{ list.list_title }}</h1>
-  <br>
-
   <!-- Dodawanie nowej pozycji na liście -->
   <form class="d-flex" method="POST">
     {% csrf_token %}
@@ -49,8 +47,16 @@ To-do list | {{ list.list_title }}
           {% if list_item.item_completed == True %}
             <tr class="table-success">
               <th scope="row">{{ list_item.id }}</th>
-              <td class="striker">{{ list_item.item }}
-                <a class="btn btn-info btn-sm" href="{% url 'create_subitem' list_item.id %}" role="button">+ subitem</a>
+              <td class="striker"><b>{{ list_item.item }}</b>
+                {% if list_items_subitems %}
+                  <ul>
+                    {% for item_subitem in list_items_subitems %}
+                      {% if item_subitem.item.id == list_item.id %}
+                          <li>{{ item_subitem.subitem }}</li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% endif %}
               </td>
               <td><i>{{ list_item.item_description }}</i></td>
               <td>
@@ -69,8 +75,17 @@ To-do list | {{ list.list_title }}
           {% else %}
             <tr>
               <th scope="row">{{ list_item.id }}</th>
-              <td>{{ list_item.item }}
-                <a class="btn btn-info btn-sm" href="{% url 'create_subitem' list_item.id %}" role="button">+ subitem</a>
+              <td><b>{{ list_item.item }}</b>
+                <a class="btn btn-info btn-sm" href="{% url 'create_subitem' list_item.id %}" role="button">+</a>
+                {% if list_items_subitems %}
+                  <ul>
+                    {% for item_subitem in list_items_subitems %}
+                      {% if item_subitem.item.id == list_item.id %}
+                          <li>{{ item_subitem.subitem }}</li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% endif %}
               </td>
               <td><i>{{ list_item.item_description }}</i></td>                        
               <td>
